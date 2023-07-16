@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class DeleteCategory {
-    public static void main(String[] args) {
-        // паттерны проектирования книга ооп
+
+    public void launch(){
 
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
         EntityManager manager = factory.createEntityManager();
@@ -58,6 +58,6 @@ public class DeleteCategory {
             manager.getTransaction().rollback();
             e.printStackTrace();
         }
-
     }
+
 }

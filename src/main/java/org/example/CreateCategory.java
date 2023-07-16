@@ -1,12 +1,11 @@
 package org.example;
 
 import jakarta.persistence.*;
-
-import java.util.List;
 import java.util.Scanner;
 
 public class CreateCategory {
-    public static void main(String[] args) {
+
+    public void launch(){
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
         EntityManager manager = factory.createEntityManager();
 
@@ -60,15 +59,10 @@ public class CreateCategory {
                 manager.persist(tree);
             }
 
-
-
-
             manager.getTransaction().commit();
         } catch (Exception e) {
             manager.getTransaction().rollback();
             e.printStackTrace();
         }
-
-
     }
 }

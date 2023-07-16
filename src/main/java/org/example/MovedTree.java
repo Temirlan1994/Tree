@@ -6,8 +6,7 @@ import java.util.Scanner;
 
 public class MovedTree {
 
-    public static void main(String[] args) {
-
+    public void launch(){
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
         EntityManager manager = factory.createEntityManager();
 
@@ -91,7 +90,47 @@ public class MovedTree {
             query.setParameter(2,moveCategory.getRightKey());
             query.executeUpdate();
 
+            /*
+            //Отрицательные ключи сделать положительным
+            int R = r2 + a; //новый правый родительский ключ
+            int b = R - r1 - 1; //разница между новым родительским ключом и перемещаемым ключом
+            int c = level2 - level1 + 1; // разница уровней новых и перемещаемых категории
 
+            Query query3 = manager.createQuery(
+                    "update Tree t set t.left_key = ?1 - t.left_key, t.right_key = ?1 - t.right_key, t.level = t.level + ?2" +
+                            "where t.left_key < 0"
+            );
+            query3.setParameter(1, b);
+            query3.setParameter(2, c);
+            query3.executeUpdate();
+
+            Tree tree2 = manager.find(Tree.class, id2);
+            manager.refresh(tree2);
+            int r2 = tree2.getRight_key();
+            int level2 = tree2.getLevel();
+
+            Tree tree1 = manager.find(Tree.class, id1);
+            int r1 = tree1.getRight_key();
+            int level1 = tree1.getLevel();
+            */
+
+            /*
+            if(id2 == 0) {
+                TypedQuery<Integer> typedQuery = manager.createQuery(
+                        "select max (t.right_key) from Tree t", Integer.class
+                );
+                int maxKey = typedQuery.getSingleResult(); //новый max ключ
+                int key = maxKey - l1 + 1;
+
+                Query query0 = manager.createQuery(
+                        "update Tree t set t.left_key = ?1 - t.left_key, t.right_key = ?1 - right_key, t.level = t.level - ?2 " +
+                                "where t.left_key < 0"
+                );
+                query0.setParameter(1, key);
+                query0.setParameter(2, level1);
+                query0.executeUpdate();
+            }
+            */
 
 
             manager.getTransaction().commit();
