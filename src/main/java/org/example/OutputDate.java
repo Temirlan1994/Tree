@@ -4,14 +4,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) {
-
-
+public class OutputDate {
+    public void output(){
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
         EntityManager manager = factory.createEntityManager();
 
@@ -36,14 +33,6 @@ public class Main {
             manager.getTransaction().rollback();
             e.printStackTrace();
         }
-
-
-
-
-
     }
 
-
-
 }
-

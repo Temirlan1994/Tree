@@ -6,11 +6,15 @@ public class Application {
 
     public static void main(String[] args) {
 
+        OutputDate outputDate = new OutputDate();
+        outputDate.output();
+        System.out.println("---------");
         System.out.println("Создать категорию [1]");
         System.out.println("Переместить категорию [2]");
         System.out.println("Удалить категорию [3]");
         Scanner sc = new Scanner(System.in);
         System.out.print("Выберите действие: ");
+
         String action = sc.nextLine();
 
         if(action.equals("1")){
@@ -25,9 +29,6 @@ public class Application {
         }else {
             System.out.println("wrong action");
         }
-
-
-
 
     }
 }
