@@ -28,8 +28,6 @@ public class Application {
             deleteCategory.launch();
         }else {
             System.out.println("wrong action");
-            Move move = new Move();
-            move.launch();
         }
 
     }
