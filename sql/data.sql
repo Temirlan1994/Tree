@@ -1,3 +1,4 @@
+
 insert into tree(left_key, right_key, level, name)
 values (1, 10, 0, 'Комплектующие'),
        (2,7,1,'Процессоры'),

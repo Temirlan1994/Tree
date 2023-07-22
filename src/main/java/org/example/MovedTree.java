@@ -12,15 +12,15 @@ public class MovedTree {
 
         Scanner sc = new Scanner(System.in);
         System.out.print("введите id категории: ");
-        int category = Integer.parseInt(sc.nextLine());
+        int categoryId = Integer.parseInt(sc.nextLine());
         System.out.print("введите id новой родительской категории: ");
-        int newCategory = Integer.parseInt(sc.nextLine());
+        int newCategoryId = Integer.parseInt(sc.nextLine());
 
         try{
             manager.getTransaction().begin();
 
             // получаем объект категории которую будем перемещать, для получения нужных полей
-            Tree moveCategory = manager.find(Tree.class, category);
+            Tree moveCategory = manager.find(Tree.class, categoryId);
             int leftKey = moveCategory.getLeftKey();
             int rightKey = moveCategory.getRightKey();
 
@@ -54,7 +54,7 @@ public class MovedTree {
 
             // Для высвобождения места получаем объект родительской категории, куда будет
             // перемещена выбранная категория
-            Tree parentCategory = manager.find(Tree.class, newCategory);
+            Tree parentCategory = manager.find(Tree.class, newCategoryId);
 
             // Высвобождаем место для вставки перемещаемой категории
             query = manager.createQuery(
@@ -71,7 +71,7 @@ public class MovedTree {
             query.setParameter(2,parentCategory.getRightKey());
             query.executeUpdate();
 
-            // Обновляем данные объекта
+            // Обновляем данные родительского объекта
             manager.refresh(parentCategory);
 
             // Меняем ключи по формуле
@@ -83,55 +83,20 @@ public class MovedTree {
             query.setParameter(2,moveCategory.getRightKey());
             query.executeUpdate();
 
+            // обновляем перемещаемую категорию и приводим уровни в соответствие
+            manager.refresh(moveCategory);
+
+            int level2 = parentCategory.getLevel(); // уровень новой родительской категории
+            int level1 = moveCategory.getLevel(); // уровень перемещаемой категории
+            int levelInterval = level2-level1; // интервал уровней
+
             query = manager.createQuery(
-                    "update  Tree t set t.right_key = (0 - t.right_key) + (?1 - ?2 -1) where t.right_key<0"
+                    "update Tree t set t.level = t.level + ?1 + 1 where t.left_key>=?2 and t.right_key<=?3"
             );
-            query.setParameter(1,parentCategory.getRightKey());
-            query.setParameter(2,moveCategory.getRightKey());
+            query.setParameter(1,levelInterval);
+            query.setParameter(2,moveCategory.getLeftKey());
+            query.setParameter(3,moveCategory.getRightKey());
             query.executeUpdate();
-
-            /*
-            //Отрицательные ключи сделать положительным
-            int R = r2 + a; //новый правый родительский ключ
-            int b = R - r1 - 1; //разница между новым родительским ключом и перемещаемым ключом
-            int c = level2 - level1 + 1; // разница уровней новых и перемещаемых категории
-
-            Query query3 = manager.createQuery(
-                    "update Tree t set t.left_key = ?1 - t.left_key, t.right_key = ?1 - t.right_key, t.level = t.level + ?2" +
-                            "where t.left_key < 0"
-            );
-            query3.setParameter(1, b);
-            query3.setParameter(2, c);
-            query3.executeUpdate();
-
-            Tree tree2 = manager.find(Tree.class, id2);
-            manager.refresh(tree2);
-            int r2 = tree2.getRight_key();
-            int level2 = tree2.getLevel();
-
-            Tree tree1 = manager.find(Tree.class, id1);
-            int r1 = tree1.getRight_key();
-            int level1 = tree1.getLevel();
-            */
-
-            /*
-            if(id2 == 0) {
-                TypedQuery<Integer> typedQuery = manager.createQuery(
-                        "select max (t.right_key) from Tree t", Integer.class
-                );
-                int maxKey = typedQuery.getSingleResult(); //новый max ключ
-                int key = maxKey - l1 + 1;
-
-                Query query0 = manager.createQuery(
-                        "update Tree t set t.left_key = ?1 - t.left_key, t.right_key = ?1 - right_key, t.level = t.level - ?2 " +
-                                "where t.left_key < 0"
-                );
-                query0.setParameter(1, key);
-                query0.setParameter(2, level1);
-                query0.executeUpdate();
-            }
-            */
-
 
             manager.getTransaction().commit();
         }catch (Exception e) {

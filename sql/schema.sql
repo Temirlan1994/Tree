@@ -1,3 +1,4 @@
+drop table tree;
 create table tree
 (
     id serial8,
